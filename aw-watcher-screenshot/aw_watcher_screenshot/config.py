@@ -39,7 +39,7 @@ def parse_args(argv=None):
     parser.add_argument(
         "--unit",
         default=str(config["interval_unit"]),
-        help='seconds or minutes (also: s, m, сек, мин)',
+        help="seconds or minutes (also s or m)",
     )
     parser.add_argument(
         "--every",
