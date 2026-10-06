@@ -7,6 +7,11 @@
 </p>
 
 <p align="center">
+  This fork also captures the whole screen on a timer.<br>
+  In the web UI, open <b>Screenshots</b> to turn capture on or off and set the interval in seconds or minutes.
+</p>
+
+<p align="center">
   <a href="https://twitter.com/ActivityWatchIt">
     <img title="Twitter follow" src="https://img.shields.io/twitter/follow/ActivityWatchIt.svg?style=social&label=Follow"/>
   </a>
