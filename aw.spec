@@ -89,6 +89,7 @@ aw_sync_bin = aw_server_rust_location / "target/package/aw-sync"
 aw_qt_location = Path("aw-qt")
 awa_location = Path("aw-watcher-afk")
 aww_location = Path("aw-watcher-window")
+awshot_location = Path("aw-watcher-screenshot")
 awi_location = Path("aw-watcher-input")
 aw_notify_location = Path("aw-notify")
 
@@ -151,6 +152,11 @@ aw_watcher_afk_a = build_analysis(
     ],
 )
 aw_watcher_input_a = build_analysis("aw_watcher_input", awi_location)
+aw_watcher_screenshot_a = build_analysis(
+    "aw_watcher_screenshot",
+    awshot_location,
+    hiddenimports=["mss", "PIL", "PIL.Image"],
+)
 aw_watcher_window_a = build_analysis(
     "aw_watcher_window",
     aww_location,
@@ -189,6 +195,7 @@ merge_args = [
     (aw_qt_a, "aw-qt", "aw-qt"),
     (aw_watcher_afk_a, "aw-watcher-afk", "aw-watcher-afk"),
     (aw_watcher_window_a, "aw-watcher-window", "aw-watcher-window"),
+    (aw_watcher_screenshot_a, "aw-watcher-screenshot", "aw-watcher-screenshot"),
     (aw_watcher_input_a, "aw-watcher-input", "aw-watcher-input"),
 ]
 if aw_notify_a is not None:
@@ -205,6 +212,9 @@ aww_coll = build_collect(aw_watcher_window_a, "aw-watcher-window")
 
 # aw-watcher-afk
 awa_coll = build_collect(aw_watcher_afk_a, "aw-watcher-afk")
+
+# aw-watcher-screenshot
+awshot_coll = build_collect(aw_watcher_screenshot_a, "aw-watcher-screenshot")
 
 # aw-qt
 awq_coll = build_collect(
@@ -226,6 +236,7 @@ if platform.system() == "Darwin":
         aws_coll,
         aww_coll,
         awa_coll,
+        awshot_coll,
         awi_coll,
     ]
     if aw_notify_coll is not None:

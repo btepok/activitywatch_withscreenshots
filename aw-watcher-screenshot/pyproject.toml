@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "aw-watcher-screenshot"
+version = "0.1.0"
+description = "Periodic full-screen screenshots for ActivityWatch"
+authors = ["ActivityWatch Contributors"]
+license = "MPL-2.0"
+packages = [{ include = "aw_watcher_screenshot" }]
+
+[tool.poetry.scripts]
+aw-watcher-screenshot = "aw_watcher_screenshot:main"
+
+[tool.poetry.dependencies]
+python = "^3.8"
+aw-client = "^0.5.14"
+mss = "*"
+pillow = "*"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

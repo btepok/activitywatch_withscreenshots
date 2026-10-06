@@ -7,20 +7,20 @@
 #
 # We recommend creating and activating a Python virtualenv before building.
 # Instructions on how to do this can be found in the guide linked above.
-.PHONY: build install test test-query-parity clean clean_all update-submodules sync-tauri-server
+.PHONY: build install test test-query-parity clean clean_all update-submodules sync-tauri-server patch-screenshot
 
 SHELL := /usr/bin/env bash
 
 OS := $(shell uname -s)
 
 ifeq ($(TAURI_BUILD),true)
-	SUBMODULES := aw-core aw-client aw-server aw-server-rust aw-watcher-afk aw-watcher-window aw-tauri
+	SUBMODULES := aw-core aw-client aw-server aw-server-rust aw-watcher-afk aw-watcher-window aw-watcher-screenshot aw-tauri
 	# Include awatcher on Linux (Wayland-compatible window watcher)
 	ifeq ($(OS),Linux)
 		SUBMODULES := $(SUBMODULES) awatcher
 	endif
 else
-	SUBMODULES := aw-core aw-client aw-qt aw-server aw-server-rust aw-watcher-afk aw-watcher-window
+	SUBMODULES := aw-core aw-client aw-qt aw-server aw-server-rust aw-watcher-afk aw-watcher-window aw-watcher-screenshot
 endif
 
 # Exclude aw-server-rust if SKIP_SERVER_RUST is true
@@ -63,7 +63,10 @@ endif
 # What it does:
 #  - Installs all the Python modules
 #  - Builds the web UI and bundles it with aw-server
-build: aw-core/.git
+patch-screenshot: aw-qt/.git
+	python scripts/patch_screenshot_autostart.py aw-qt/aw_qt/config.py
+
+build: aw-core/.git patch-screenshot
 #	needed due to https://github.com/pypa/setuptools/issues/1963
 #	would ordinarily be specified in pyproject.toml, but is not respected due to https://github.com/pypa/setuptools/issues/1963
 	pip install 'setuptools>49.1.1'
@@ -216,7 +219,7 @@ dist/$(APP_BUNDLE).dmg: dist/$(APP_BUNDLE).app
 dist/notarize:
 	./scripts/notarize.sh
 
-package:
+package: patch-screenshot
 	rm -rf dist
 	mkdir -p dist/activitywatch
 	for dir in $(PACKAGEABLES); do \

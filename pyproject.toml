@@ -13,6 +13,7 @@ python = "^3.9"
 #aw-client = {path = "aw-client"}
 #aw-watcher-afk = {path = "aw-watcher-afk"}
 #aw-watcher-window = {path = "aw-watcher-window"}
+#aw-watcher-screenshot = {path = "aw-watcher-screenshot"}
 #aw-server = {path = "aw-server"}
 #aw-qt = {path = "aw-qt"}
 

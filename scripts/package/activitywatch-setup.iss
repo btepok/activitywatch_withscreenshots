@@ -21,8 +21,8 @@ AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
-AppSupportURL="https://github.com/ActivityWatch/activitywatch/issues"
-AppUpdatesURL="https://github.com/ActivityWatch/activitywatch/releases"
+AppSupportURL="https://github.com/btepok/activitywatch_withscreenshots/issues"
+AppUpdatesURL="https://github.com/btepok/activitywatch_withscreenshots/releases"
 DefaultDirName={autopf}\{#MyAppName}
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
@@ -47,6 +47,7 @@ Name: "StartMenuEntry" ; Description: "Start ActivityWatch when Windows starts";
 [Files]
 Source: "{#DistDir}\activitywatch\aw-qt.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#DistDir}\activitywatch\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#RootDir}\scripts\package\enable_screenshot_autostart.ps1"; DestDir: "{app}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -55,6 +56,7 @@ Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: de
 Name: "{userstartup}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: StartMenuEntry;
 
 [Run]
+Filename: "powershell.exe"; Parameters: "-NoProfile -ExecutionPolicy Bypass -File ""{app}\enable_screenshot_autostart.ps1"""; Flags: runhidden waituntilterminated
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
 ; Removes the previously installed version before installing the new one
