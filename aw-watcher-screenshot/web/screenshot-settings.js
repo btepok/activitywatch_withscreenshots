@@ -53,16 +53,55 @@
       '<select id="aw-shot-unit"><option value="seconds">секунд</option>' +
       '<option value="minutes">минут</option></select></label>' +
       '<button id="aw-shot-save" type="button">Сохранить</button>' +
-      '<div id="aw-shot-status" style="margin-top:8px;font-size:12px"></div>';
+      '<div id="aw-shot-status" style="margin-top:8px;font-size:12px"></div>' +
+      '<div style="margin-top:12px;padding-top:10px;border-top:1px solid #eee">' +
+      '<div style="font-size:12px;color:#666;margin-bottom:4px">Папка</div>' +
+      '<div id="aw-shot-folder" style="font-size:12px;word-break:break-all;margin-bottom:8px"></div>' +
+      '<div id="aw-shot-usage" style="font-size:13px;margin-bottom:8px"></div>' +
+      '<a id="aw-shot-zip" href="http://127.0.0.1:5617/screenshots.zip" ' +
+      'style="display:inline-block;padding:6px 10px;background:#222;color:#fff;border-radius:6px;text-decoration:none">Скачать zip</a>' +
+      "</div>";
     panel.style.cssText =
       "position:fixed;z-index:2000;background:#fff;color:#222;border:1px solid #ddd;" +
-      "border-radius:8px;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);width:260px";
+      "border-radius:8px;padding:12px;box-shadow:0 8px 24px rgba(0,0,0,.15);width:340px";
     document.body.appendChild(panel);
     panel.addEventListener("click", function (event) {
       event.stopPropagation();
     });
     document.getElementById("aw-shot-save").addEventListener("click", onSave);
     return panel;
+  }
+
+  function formatBytes(size) {
+    var units = ["B", "KB", "MB", "GB"];
+    var value = size || 0;
+    var index = 0;
+    while (value >= 1024 && index < units.length - 1) {
+      value /= 1024;
+      index += 1;
+    }
+    var shown = index ? value.toFixed(1) : String(value);
+    return shown + " " + units[index];
+  }
+
+  function refreshUsage() {
+    var folder = document.getElementById("aw-shot-folder");
+    var usage = document.getElementById("aw-shot-usage");
+    if (!usage) return;
+    usage.textContent = "Считаю...";
+    fetch("http://127.0.0.1:5617/info")
+      .then(function (response) {
+        if (!response.ok) throw new Error("info");
+        return response.json();
+      })
+      .then(function (info) {
+        folder.textContent = info.folder || "";
+        usage.textContent = (info.files || 0) + " файлов, " + formatBytes(info.bytes);
+      })
+      .catch(function () {
+        folder.textContent = "";
+        usage.textContent = "Вотчер не запущен";
+      });
   }
 
   function fill(data) {
@@ -77,9 +116,10 @@
     var panel = ensurePanel();
     var rect = anchor.getBoundingClientRect();
     panel.style.top = rect.bottom + 8 + "px";
-    panel.style.left = Math.max(8, rect.right - 260) + "px";
+    panel.style.left = Math.max(8, rect.right - 340) + "px";
     panel.style.display = "block";
     document.getElementById("aw-shot-status").textContent = "";
+    refreshUsage();
     loadSettings()
       .then(fill)
       .catch(function () {

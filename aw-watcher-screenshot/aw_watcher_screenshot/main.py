@@ -1,5 +1,6 @@
 import logging
 import os
+import threading
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -12,6 +13,7 @@ from aw_core.models import Event
 
 from .capture import capture_fullscreen, prune_old, save_jpeg
 from .config import load_config, parse_args
+from .http_api import serve_screenshot_http
 from .interval import interval_to_seconds
 from .settings_sync import SETTINGS_BUCKET, SettingsSync, as_bool
 
@@ -20,6 +22,16 @@ logger = logging.getLogger(__name__)
 
 def screenshot_dir() -> Path:
     return Path(get_data_dir("aw-watcher-screenshot")) / "screenshots"
+
+
+def _start_http(directory: Path) -> None:
+    thread = threading.Thread(
+        target=serve_screenshot_http,
+        args=(directory,),
+        name="screenshot-http",
+        daemon=True,
+    )
+    thread.start()
 
 
 def take_screenshot(directory: Path, quality: int, retention_days: float):
@@ -143,6 +155,7 @@ def main():
         testing=args.testing,
     )
     directory = screenshot_dir()
+    _start_http(directory)
     bucket_id = f"{client.client_name}_{client.client_hostname}"
 
     client.wait_for_start(timeout=30)
