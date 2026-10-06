@@ -155,7 +155,7 @@ def main():
         testing=args.testing,
     )
     directory = screenshot_dir()
-    _start_http(directory)
+    _start_http(Path(get_data_dir()))
     bucket_id = f"{client.client_name}_{client.client_hostname}"
 
     client.wait_for_start(timeout=30)

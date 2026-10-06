@@ -58,7 +58,8 @@
       '<div style="font-size:12px;color:#666;margin-bottom:4px">Папка</div>' +
       '<div id="aw-shot-folder" style="font-size:12px;word-break:break-all;margin-bottom:8px"></div>' +
       '<div id="aw-shot-usage" style="font-size:13px;margin-bottom:8px"></div>' +
-      '<a id="aw-shot-zip" href="http://127.0.0.1:5617/screenshots.zip" ' +
+      '<div style="font-size:12px;color:#666;margin-bottom:8px">В архиве скрины, база, настройки и логи</div>' +
+      '<a id="aw-shot-zip" href="http://127.0.0.1:5617/activitywatch-data.zip" ' +
       'style="display:inline-block;padding:6px 10px;background:#222;color:#fff;border-radius:6px;text-decoration:none">Скачать zip</a>' +
       "</div>";
     panel.style.cssText =

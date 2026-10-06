@@ -6,7 +6,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlsplit
 
-from .archive import usage, write_zip
+from .archive import ZIP_NAME, usage, write_zip
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ class _Handler(BaseHTTPRequestHandler):
         if path in ("/info", "/info/"):
             self._send_info()
             return
-        if path in ("/screenshots.zip", "/screenshots.zip/"):
+        if path in ("/screenshots.zip", "/screenshots.zip/", "/" + ZIP_NAME, "/" + ZIP_NAME + "/"):
             self._send_zip()
             return
         self.send_error(404)
@@ -46,7 +46,7 @@ class _Handler(BaseHTTPRequestHandler):
             self.send_response(200)
             self._cors()
             self.send_header("Content-Type", "application/zip")
-            self.send_header("Content-Disposition", 'attachment; filename="screenshots.zip"')
+            self.send_header("Content-Disposition", f'attachment; filename="{ZIP_NAME}"')
             self.send_header("Content-Length", str(size))
             self.end_headers()
             with tmp_path.open("rb") as src:
