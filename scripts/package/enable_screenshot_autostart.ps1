@@ -6,15 +6,24 @@ $path = Join-Path $dir "aw-qt.toml"
 
 $wanted = '["aw-server", "aw-watcher-afk", "aw-watcher-window", "aw-watcher-screenshot"]'
 
+function Write-Utf8NoBom([string]$Target, [string]$Content) {
+    $utf8 = New-Object System.Text.UTF8Encoding $false
+    [System.IO.File]::WriteAllText($Target, $Content, $utf8)
+}
+
 if (-not (Test-Path $path)) {
-    Set-Content -Path $path -Encoding utf8 -Value @"
+    Write-Utf8NoBom $path @"
 [aw-qt]
 autostart_modules = $wanted
+
 "@
     exit 0
 }
 
 $lines = @(Get-Content -Path $path)
+if ($lines.Count -gt 0) {
+    $lines[0] = $lines[0].TrimStart([char]0xFEFF)
+}
 $done = $false
 $out = foreach ($line in $lines) {
     if (-not $done -and $line -match 'autostart_modules\s*=\s*\[([^\]]*)\]') {
@@ -39,4 +48,4 @@ if (-not $done) {
     $out = @("[aw-qt]", "autostart_modules = $wanted", "") + $out
 }
 
-Set-Content -Path $path -Encoding utf8 -Value $out
+Write-Utf8NoBom $path (($out -join "`r`n") + "`r`n")
