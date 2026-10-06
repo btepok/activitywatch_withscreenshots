@@ -6,6 +6,7 @@ from .interval import interval_to_seconds, parse_every
 
 default_config = """
 [aw-watcher-screenshot]
+enabled = true
 interval = 60
 interval_unit = "seconds"
 quality = 60
